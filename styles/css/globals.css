@@ -53,6 +53,8 @@
 
 html,
 body {
+  min-height: 100vh;
+  width: 100%;
   background-color: #F6DEDD;
   padding: 0;
   margin: 0;
