@@ -1,6 +1,11 @@
+import Layout from '@/components/Layout';
+import Banner from '@/components/Banner';
+
 export default function EventsPage() {
   return (
-    <h1>HomePage</h1>
+    <Layout title="Coffee Connoisseur">
+      <Banner buttonText="View Stores" />
+    </Layout>
   );
 }
 
