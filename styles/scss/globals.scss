@@ -13,7 +13,20 @@ body {
   padding: 0;
   margin: 0;
   font-family: $font-stack;
+  background: url("/static/background.webp");
+  background-size: cover;
+  background-position: top;
+  min-height: 100vh;
+  width: 100%;
 }
+
+/* BreakPoints */
+$mobile: 320px;
+$smtablet: 480px;
+$tablet: 641px;
+$laptop: 961px;
+$desktop: 1025px;
+$screen: 1281px;
 
 a {
   color: inherit;
@@ -26,5 +39,13 @@ p {
 
 h1 {
   margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: $title;
+}
+
+@media screen and (min-width: $tablet){
+  h1 {
+    font-size: 2.5rem;
+  }
 }
 

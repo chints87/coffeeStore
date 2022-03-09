@@ -1,6 +1,8 @@
+@import 'config';
+
 .btn {
     display: inline-block;
-    background: red;
+    background: $primary-red-01;
     color: #fff;
     padding: 10px 20px;
     cursor: pointer;
@@ -10,6 +12,10 @@
   
   .btn:hover {
     opacity: 0.9;
+  }
+
+  .btn:focus{
+    outline: 2px solid;
   }
   
   .btn-secondary {
