@@ -18,6 +18,23 @@ body {
   background-position: top;
   min-height: 100vh;
   width: 100%;
+  
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+p {
+  margin: 10px 0;
+  color: white;
+}
+
+h1 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: $title;
 }
 
 /* BreakPoints */
@@ -27,21 +44,6 @@ $tablet: 641px;
 $laptop: 961px;
 $desktop: 1025px;
 $screen: 1281px;
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-p {
-  margin: 10px 0;
-}
-
-h1 {
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  color: $title;
-}
 
 @media screen and (min-width: $tablet){
   h1 {

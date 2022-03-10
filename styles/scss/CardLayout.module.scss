@@ -1,0 +1,25 @@
+/* BreakPoints */
+$mobile: 320px;
+$smtablet: 480px;
+$tablet: 641px;
+$laptop: 961px;
+$desktop: 1025px;
+$screen: 1281px;
+
+.container{
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+    justify-items: center;
+    
+
+    @media screen and (min-width: $tablet){
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    }
+
+    @media screen and (min-width: $laptop){
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    }
+}

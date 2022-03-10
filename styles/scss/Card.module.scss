@@ -1,0 +1,58 @@
+.container{
+    background: rgba( 255, 241, 241, 0.5 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 7px );
+    -webkit-backdrop-filter: blur( 7px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    width: max-content;
+    padding: 2rem;
+    margin: 2rem;
+
+
+    &:hover{
+        background: rgba(212, 208, 208, 0.5);
+    }
+}
+
+
+
+// .container {
+//     margin: 0 5rem;
+//     top: 0;
+//     bottom: 0;
+//     left: 0;
+//     right: 0;
+//     width: 200px;
+//     height: 200px;
+    
+//   }
+  
+//   .cup {
+//     width: 100px;
+//     border-top: 250px solid white;
+//     border-left: 25px solid transparent;
+//     border-right: 25px solid transparent;
+//     &:before,
+//     &:after {
+//       position: absolute;
+//       content: '';
+//       background: white;
+//     }
+//     &:before {
+//       width: 270px;
+//       height: 30px;
+//       top: -280px;
+//       left: -35px;
+//       border-radius: 3px;
+//       box-shadow: 0 2px 0 rgba(#DEDBD2, 0.5);
+//     }
+//     &:after {
+//       width: 140px;
+//       height: 20px;
+//       top: -300px;
+//       left: -20px;
+//       border-radius: 2px;
+//     }
+//   }
+  
