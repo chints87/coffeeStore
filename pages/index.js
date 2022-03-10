@@ -1,32 +1,24 @@
+import { fetchCoffeeStores } from 'lib/fetch-coffee-stores';
 import Layout from '@/components/Layout';
 import Banner from '@/components/Banner';
+import CardLayout from '@/components/CardLayout';
+// import coffeeStores from '../data/coffee-stores.json';
 
-export default function EventsPage() {
+export default function EventsPage({ coffeeStores }) {
   return (
     <Layout title="Coffee Connoisseur">
       <Banner buttonText="View Stores" />
+      <CardLayout coffeeStores={coffeeStores} />
     </Layout>
   );
 }
 
-/* This function is executed first before the
- component function */
 export async function getStaticProps() {
-  /* Pre-generate a page i.e the
-  HTML and data - prepared from server side -
-  content during build time */
+  const coffeeStores = await fetchCoffeeStores();
 
-  /* Run server side code */
-
-  /* Code doesnt get bundled, which is
-     sent to the client side */
-
-  /* Prefetch data before this component
-     is created */
   return {
-    props: {},
+    props: {
+      coffeeStores,
+    },
   };
 }
-
-/* THIS CODE IS EXECUTED ONLY DURING
-BUILD TIME OR DEV SERVER */
