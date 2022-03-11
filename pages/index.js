@@ -4,7 +4,7 @@ import Banner from '@/components/Banner';
 import CardLayout from '@/components/CardLayout';
 // import coffeeStores from '../data/coffee-stores.json';
 
-export default function EventsPage({ coffeeStores }) {
+export default function HomePage({ coffeeStores }) {
   return (
     <Layout title="Coffee Connoisseur">
       <Banner buttonText="View Stores" />

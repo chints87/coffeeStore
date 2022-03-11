@@ -1,11 +1,42 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { fetchCoffeeStores } from 'lib/fetch-coffee-stores';
+import { isEmpty } from 'lib/is-empty';
+import { StoreContext } from '../../store/store-context';
 import Layout from '@/components/Layout';
+// import { IsEmpty } from '../../lib/is-empty';
 
-export default function CoffeeStore({ coffeeStore }) {
+// initialCoffeeStore since this is obtained
+// from pre-rendered pages at build
+export default function CoffeeStore({ initialCoffeeStore }) {
   const router = useRouter();
+
+  // Retreive id from path
+  const { id } = router.query;
+
+  // Obtain context state
+  const { state: { coffeeStores } } = useContext(StoreContext);
+  const { state } = useContext(StoreContext);
+  console.log(state);
+
+  // Create a coffeeStore state from user's location
+  const [coffeeStore, setCoffeeStore] = useState(initialCoffeeStore);
+  console.log(coffeeStore);
+  console.log(coffeeStores);
+  useEffect(() => {
+    console.log('in useEffect before first if statement');
+    if (isEmpty(initialCoffeeStore)) {
+      console.log('in useEffect before second if statement');
+      if (coffeeStores.length > 0) {
+        const findCoffeeStoreById = coffeeStores.find(
+          (userLocationCoffeeStore) => userLocationCoffeeStore.id.toString() === id,
+        );
+        setCoffeeStore(findCoffeeStoreById);
+        console.log('in useEffect');
+      }
+    }
+  }, [id, coffeeStore, initialCoffeeStore, coffeeStores]);
 
   // Checks if fallback is true in getstatic paths, then loading
   // is shown until the HTML and JSON data is populated in it
@@ -24,8 +55,8 @@ export default function CoffeeStore({ coffeeStore }) {
         {router.query.id}
       </h1>
       <p>{coffeeStore.name}</p>
-      <p>{coffeeStore.location.address}</p>
-      <p>{coffeeStore.neighbourhood}</p>
+      {coffeeStore.location?.address && <p>{coffeeStore.location.address}</p>}
+      {coffeeStore.neighbourhood && <p>{coffeeStore.neighbourhood}</p>}
       <button className="btn" type="button" onClick={() => handleUpVote()}>
         Up Vote
       </button>
@@ -56,11 +87,12 @@ export async function getStaticPaths() {
 // data a loading state is seen
 export async function getStaticProps({ params }) {
   const coffeeStores = await fetchCoffeeStores();
+  const findCoffeeStoreById = coffeeStores.find(
+    (coffeeStore) => coffeeStore.id.toString() === params.id,
+  );
   return {
     props: {
-      coffeeStore: coffeeStores.find(
-        (coffeeStore) => coffeeStore.id.toString() === params.id,
-      ),
+      initialCoffeeStore: findCoffeeStoreById || {},
     },
   };
 }

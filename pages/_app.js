@@ -1,3 +1,4 @@
+import StoreProvider from '../store/store-context';
 import '../styles/scss/globals.scss';
 
 /* export function reportWebVitals(metric) {
@@ -5,7 +6,11 @@ import '../styles/scss/globals.scss';
 } */
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  return (
+    <StoreProvider>
+      <Component {...pageProps} />
+    </StoreProvider>
+  );
 }
 
 export default MyApp;
