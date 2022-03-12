@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 import { fetchCoffeeStores } from '../../lib/fetch-coffee-stores';
 import { isEmpty } from '../../lib/is-empty';
 import { StoreContext } from '../../store/store-context';
@@ -20,6 +21,9 @@ export default function CoffeeStore({ initialCoffeeStore }) {
 
   // Create a coffeeStore state from user's location
   const [coffeeStore, setCoffeeStore] = useState(initialCoffeeStore);
+
+  // Create vote count status
+  const [votingCount, setVotingCount] = useState(0);
 
   // Create coffee store record on airtable by calling an api
   const handleCreateCoffeeStore = async (userFetchedCoffeeStore) => {
@@ -48,6 +52,20 @@ export default function CoffeeStore({ initialCoffeeStore }) {
     }
   };
 
+  // SWR data
+  const { data: fetchedSWRdata, error: err } = useSWR(
+    `/api/getCoffeeStoreById?id=${id}`,
+    (url) => fetch(url).then((res) => res.json()),
+  );
+
+  useEffect(() => {
+    if (fetchedSWRdata && fetchedSWRdata.length > 0) {
+      console.log('SWRdata', fetchedSWRdata);
+      setCoffeeStore(fetchedSWRdata[0]);
+      setVotingCount(fetchedSWRdata[0].voting);
+    }
+  }, [fetchedSWRdata]);
+
   // For CSR when coffee stores is available in context
   useEffect(() => {
     if (isEmpty(initialCoffeeStore)) {
@@ -66,14 +84,37 @@ export default function CoffeeStore({ initialCoffeeStore }) {
     }
   }, [id, coffeeStores, initialCoffeeStore]);
 
+  if (err) {
+    return <div>Something went wrong to retrieve coffee store page</div>;
+  }
+
   // Checks if fallback is true in getstatic paths, then loading
   // is shown until the HTML and JSON data is populated in it
   if (router.isFallback) {
     return <div style={{ color: 'yellow' }}>Loading</div>;
   }
 
-  const handleUpVote = () => {
-    console.log('in handle upvote function');
+  const handleUpVote = async () => {
+    // Updates in airtable and if succesful then
+    // local state for votingCount is updated
+    try {
+      const response = await fetch('/api/likeCoffeeStoreById', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+        }),
+      });
+      const dbCoffeeStore = await response.json();
+      if (dbCoffeeStore && dbCoffeeStore.length > 0) {
+        const count = votingCount + 1;
+        setVotingCount(count);
+      }
+    } catch (error) {
+      console.error('Error like coffee store', error);
+    }
   };
 
   return (
@@ -86,6 +127,7 @@ export default function CoffeeStore({ initialCoffeeStore }) {
       <p>{coffeeStore.name}</p>
       {coffeeStore.address && <p>{coffeeStore.address}</p>}
       {coffeeStore.neighbourhood && <p>{coffeeStore.neighbourhood}</p>}
+      <p>{votingCount}</p>
       <button className="btn" type="button" onClick={() => handleUpVote()}>
         Up Vote
       </button>
