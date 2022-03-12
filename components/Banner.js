@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { ACTION_TYPES, StoreContext } from '../store/store-context';
-import { fetchCoffeeStores } from '../lib/fetch-coffee-stores';
+// import { fetchCoffeeStores } from '../lib/fetch-coffee-stores';
 import styles from '@/styles/scss/Banner.module.scss';
 import userLocation from '../hooks/user-location';
 import CardLayout from './CardLayout';
@@ -21,7 +21,8 @@ export default function Banner({ buttonText }) {
     const fetchCoffeeLocations = async () => {
       if (latLong) {
         try {
-          const fetchUserLocationCoffeeStores = await fetchCoffeeStores(latLong);
+          const response = await fetch(`/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=30`);
+          const fetchUserLocationCoffeeStores = await response.json();
           dispatch({
             type: ACTION_TYPES.SET_COFFEE_STORES,
             payload: { coffeeStores: fetchUserLocationCoffeeStores },

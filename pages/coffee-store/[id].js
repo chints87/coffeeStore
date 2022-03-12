@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { fetchCoffeeStores } from 'lib/fetch-coffee-stores';
-import { isEmpty } from 'lib/is-empty';
+import { fetchCoffeeStores } from '../../lib/fetch-coffee-stores';
+import { isEmpty } from '../../lib/is-empty';
 import { StoreContext } from '../../store/store-context';
 import Layout from '@/components/Layout';
 // import { IsEmpty } from '../../lib/is-empty';
@@ -17,26 +17,54 @@ export default function CoffeeStore({ initialCoffeeStore }) {
 
   // Obtain context state
   const { state: { coffeeStores } } = useContext(StoreContext);
-  const { state } = useContext(StoreContext);
-  console.log(state);
 
   // Create a coffeeStore state from user's location
   const [coffeeStore, setCoffeeStore] = useState(initialCoffeeStore);
-  console.log(coffeeStore);
-  console.log(coffeeStores);
+
+  // Create coffee store record on airtable by calling an api
+  const handleCreateCoffeeStore = async (userFetchedCoffeeStore) => {
+    try {
+      const {
+        id: identity, name, address, neighbourhood, imgUrl,
+      } = userFetchedCoffeeStore;
+      const response = await fetch('/api/createCoffeeStore', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: `${identity}`,
+          name,
+          address,
+          neighbourhood: neighbourhood || '',
+          voting: 0,
+          imgUrl: imgUrl || '',
+        }),
+      });
+      const dbCoffeeStore = await response.json();
+      console.log(dbCoffeeStore);
+    } catch (error) {
+      console.error('Error creating coffee store', error);
+    }
+  };
+
+  // For CSR when coffee stores is available in context
   useEffect(() => {
-    console.log('in useEffect before first if statement');
     if (isEmpty(initialCoffeeStore)) {
-      console.log('in useEffect before second if statement');
       if (coffeeStores.length > 0) {
         const findCoffeeStoreById = coffeeStores.find(
           (userLocationCoffeeStore) => userLocationCoffeeStore.id.toString() === id,
         );
-        setCoffeeStore(findCoffeeStoreById);
-        console.log('in useEffect');
+        if (findCoffeeStoreById) {
+          setCoffeeStore(findCoffeeStoreById);
+          handleCreateCoffeeStore(findCoffeeStoreById);
+        }
       }
+    } else {
+      // For SSG coffee stores
+      handleCreateCoffeeStore(initialCoffeeStore);
     }
-  }, [id, coffeeStore, initialCoffeeStore, coffeeStores]);
+  }, [id, coffeeStores, initialCoffeeStore]);
 
   // Checks if fallback is true in getstatic paths, then loading
   // is shown until the HTML and JSON data is populated in it
@@ -47,6 +75,7 @@ export default function CoffeeStore({ initialCoffeeStore }) {
   const handleUpVote = () => {
     console.log('in handle upvote function');
   };
+
   return (
     <Layout title="Coffee Shops">
       <h1>
@@ -55,7 +84,7 @@ export default function CoffeeStore({ initialCoffeeStore }) {
         {router.query.id}
       </h1>
       <p>{coffeeStore.name}</p>
-      {coffeeStore.location?.address && <p>{coffeeStore.location.address}</p>}
+      {coffeeStore.address && <p>{coffeeStore.address}</p>}
       {coffeeStore.neighbourhood && <p>{coffeeStore.neighbourhood}</p>}
       <button className="btn" type="button" onClick={() => handleUpVote()}>
         Up Vote
